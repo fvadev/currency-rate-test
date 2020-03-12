@@ -1,0 +1,25 @@
+{
+    "name": "fvadev/currency-rate-test",
+    "description": "Currency Rate",
+    "type": "project",
+    "require": {
+        "php": "~7.2.0"
+    },
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Viacheslav Fedorenko",
+            "email": "fvadev@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "CurrencyRate\\": "lib",
+            "CurrencyRateTest\\": "tests\\unit"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "8.5.x-dev"
+    }
+}
