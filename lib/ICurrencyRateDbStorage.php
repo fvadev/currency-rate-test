@@ -15,17 +15,18 @@ interface ICurrencyRateDbStorage
     /**
      * Save currency rate in database
      *
-     * @param ICurrencyRate $currency_rate
-     * @return mixed
+     * @param string $from_currency_code
+     * @param string $to_currency_code
+     * @param float $currency_rate
      */
-    public function save(ICurrencyRate $currency_rate);
+    public function save(string $from_currency_code, string $to_currency_code, float $currency_rate): void;
 
     /**
      * Load currency rate in database
      *
      * @param string $from_currency_code
      * @param string $to_currency_code
-     * @return ICurrencyRate
+     * @return float|null
      */
-    public function load(string $from_currency_code, string $to_currency_code): ICurrencyRate;
+    public function load(string $from_currency_code, string $to_currency_code): ?float;
 }

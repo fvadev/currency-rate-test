@@ -38,19 +38,18 @@ class GetCurrencyRateFromCacheBehaviour implements IGetCurrencyRateBehaviour
      *
      * @param string $from_currency_code
      * @param string $to_currency_code
-     * @return ICurrencyRate
+     * @return float
+     * @throws CouldNotRetrieveCurrencyRateException
      */
-    public function get(string $from_currency_code, string $to_currency_code): ICurrencyRate
+    public function get(string $from_currency_code, string $to_currency_code): float
     {
         $currency_rate = $this->storage->get($from_currency_code, $to_currency_code);
-        if (!($currency_rate instanceof CurrencyRateNull)) {
+        if (!is_null($currency_rate)) {
             return $currency_rate;
         }
 
         $currency_rate = $this->behavior->get($from_currency_code, $to_currency_code);
-        if (!($currency_rate instanceof CurrencyRateNull)) {
-            $this->storage->set($currency_rate);
-        }
+        $this->storage->set($from_currency_code, $to_currency_code, $currency_rate);
 
         return $currency_rate;
     }

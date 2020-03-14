@@ -7,8 +7,7 @@
 use CurrencyRate\GetCurrencyRateFromHttpBehaviour;
 use CurrencyRate\GetCurrencyRateNullBehaviour;
 use CurrencyRate\ICurrencyRateHttpResource;
-use CurrencyRate\CurrencyRateNull;
-use CurrencyRate\CurrencyRate;
+use CurrencyRate\CouldNotRetrieveCurrencyRateException;
 
 class GetCurrencyRateFromHttpBehaviourTest extends \PHPUnit\Framework\TestCase
 {
@@ -37,17 +36,25 @@ class GetCurrencyRateFromHttpBehaviourTest extends \PHPUnit\Framework\TestCase
         $this->mockResourceNull->expects($this->any())
             ->method('get')
             ->with('USD', 'RUR')
-            ->willReturn(new CurrencyRateNull());
-        $this->assertInstanceOf(CurrencyRateNull::class, $this->behaviorNull->get('USD', 'RUR'));
+            ->willReturn(null);
+        $this->expectException(CouldNotRetrieveCurrencyRateException::class);
+        $this->behavior->get('USD', 'RUR');
     }
 
     public function testGetForExists()
     {
         $this->mockResource->expects($this->any())
             ->method('get')
-            ->with('USD', 'RUR')
-            ->willReturn(new CurrencyRate(80, 'USD', 'RUR'));
+            ->will(
+                $this->returnValueMap(
+                    [
+                        ['USD', 'RUR', 80.0],
+                        ['EUR', 'RUR', 90.0]
+                    ]
+                )
+            );
 
-        $this->assertEquals("1 USD is 80.00 RUR", $this->behavior->get('USD', 'RUR')->message());
+        $this->assertEquals(80.0, $this->behavior->get('USD', 'RUR'));
+        $this->assertEquals(90.0, $this->behavior->get('EUR', 'RUR'));
     }
 }

@@ -32,20 +32,19 @@ class CurrencyRateHttpResource implements ICurrencyRateHttpResource
      *
      * @param string $from_currency_code
      * @param string $to_currency_code
-     * @return ICurrencyRate
+     * @return float|null
      */
-    public function get(string $from_currency_code, string $to_currency_code): ICurrencyRate
+    public function get(string $from_currency_code, string $to_currency_code): ?float
     {
         try {
-            // @TODO making request, receive and parse result, fill values, exceptions
-//            return new CurrencyRate(75, $from_currency_code, $to_currency_code);
-            return new CurrencyRateNull();
-            $rate = $from_currency = $to_currency = null;
-            return new CurrencyRate($rate, $from_currency_code, $to_currency_code);
+            // @TODO making request, receive and parse result, fill rate, exceptions
+//            return 75.5;
+            $rate = null;
+            return $rate;
         } catch (\Exception $e) {
             //@TODO Process extensions here
         }
 
-        return new CurrencyRateNull();
+        return null;
     }
 }

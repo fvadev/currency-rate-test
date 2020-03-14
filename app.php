@@ -4,8 +4,7 @@
  * @package  fvadev/currency-rate-test
  */
 
-use CurrencyRate\ICurrencyRate;
-use CurrencyRate\IGetCurrencyRateBehaviour;
+use CurrencyRate\CurrencyRate;
 use CurrencyRate\GetCurrencyRateFromCacheBehaviour;
 use CurrencyRate\GetCurrencyRateFromDbBehaviour;
 use CurrencyRate\GetCurrencyRateFromHttpBehaviour;
@@ -13,28 +12,26 @@ use CurrencyRate\GetCurrencyRateNullBehaviour;
 use CurrencyRate\CurrencyRateHttpResource;
 use CurrencyRate\CurrencyRateDbStorage;
 use CurrencyRate\CurrencyRateCacheStorage;
+use CurrencyRate\CouldNotRetrieveCurrencyRateException;
 
 require "vendor/autoload.php";
 
 try {
-    /**
-     * @var  $get_currancy_rate_behaviour IGetCurrencyRateBehaviour
-     */
-    $get_currancy_rate_behaviour = new GetCurrencyRateFromCacheBehaviour(
-        new GetCurrencyRateFromDbBehaviour(
-            new GetCurrencyRateFromHttpBehaviour(
-                new GetCurrencyRateNullBehaviour(),
-                new CurrencyRateHttpResource()
+    $currency_rate = new CurrencyRate("USD", "RUR",
+        new GetCurrencyRateFromCacheBehaviour(
+            new GetCurrencyRateFromDbBehaviour(
+                new GetCurrencyRateFromHttpBehaviour(
+                    new GetCurrencyRateNullBehaviour(),
+                    new CurrencyRateHttpResource()
+                ),
+                new CurrencyRateDbStorage()
             ),
-            new CurrencyRateDbStorage()
-        ),
-        new CurrencyRateCacheStorage()
+            new CurrencyRateCacheStorage()
+        )
     );
-    /**
-     * @var $currency_rate ICurrencyRate
-     */
-    $currency_rate = $get_currancy_rate_behaviour->get('USD', 'RUR');
-    echo $currency_rate->message() . "\n";
+    echo sprintf("Rate is %.2f", $currency_rate->rate()) . "\n";
+} catch (CouldNotRetrieveCurrencyRateException $noRateException) {
+    echo "Error: " . $noRateException->getMessage() . "\n";
 } catch (\Exception $e) {
     // @TODO process error
 }

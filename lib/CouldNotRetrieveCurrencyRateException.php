@@ -7,16 +7,12 @@
 namespace CurrencyRate;
 
 /**
- * Interface ICurrencyRate
+ * Raised when cannot retrieve currency rate
+ *
+ * Class CouldNotRetrieveCurrencyRateException
  * @package CurrencyRate
  */
-interface ICurrencyRate
+class CouldNotRetrieveCurrencyRateException extends \Exception
 {
-    /**
-     * Get currency rate
-     *
-     * @return float
-     */
-    public  function rate(): float;
 
 }

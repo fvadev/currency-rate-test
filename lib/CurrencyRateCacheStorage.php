@@ -29,11 +29,13 @@ class CurrencyRateCacheStorage implements ICurrencyRateCacheStorage
     }
 
     /**
-     * Save currency rate in the cache
+     * Set currency rate in the cache
      *
-     * @param ICurrencyRate $currency_rate
+     * @param string $from_currency_code
+     * @param string $to_currency_code
+     * @param float $currency_rate
      */
-    public function set(ICurrencyRate $currency_rate)
+    public function set(string $from_currency_code, string $to_currency_code, float $currency_rate): void
     {
         // @TODO save rate in cache engine, catch extensions
     }
@@ -43,21 +45,20 @@ class CurrencyRateCacheStorage implements ICurrencyRateCacheStorage
      *
      * @param string $from_currency_code
      * @param string $to_currency_code
-     * @return ICurrencyRate
+     * @return float|null
      */
-    public function get(string $from_currency_code, string $to_currency_code): ICurrencyRate
+    public function get(string $from_currency_code, string $to_currency_code): ?float
     {
         try {
-            // @TODO receive cache data, parse, fill values, exceptions
-//            return new CurrencyRate(100, $from_currency_code, $to_currency_code);
-            return new CurrencyRateNull();
-            $rate = 0;
-            return new CurrencyRate($rate, $from_currency_code, $to_currency_code);
+            // @TODO receive cache data, parse, fill rate, exceptions
+//            return 100;
+            $rate = null;
+            return $rate;
         } catch (\Exception $e) {
             //@TODO Process extensions here
         }
 
-        return new CurrencyRateNull();
+        return null;
     }
 
 }

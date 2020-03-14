@@ -14,28 +14,33 @@ class CurrencyRate implements ICurrencyRate
 {
     private $from_currency_code;
     private $to_currency_code;
-    private $currency_rate;
+    private $get_rate_behaviour;
 
     /**
      * CurrencyRate constructor.
-     * @param float $currency_rate - currency rate
-     * @param string $from_currency_code - currency from code
-     * @param string $to_currency_code - currency to code
+     * @param string $from_currency_code
+     * @param string $to_currency_code
+     * @param IGetCurrencyRateBehaviour $get_rate_behaviour
      */
-    public function __construct(float $currency_rate, string $from_currency_code, string $to_currency_code)
+    public function __construct(
+        string $from_currency_code,
+        string $to_currency_code,
+        IGetCurrencyRateBehaviour $get_rate_behaviour
+    )
     {
-        $this->currency_rate = $currency_rate;
         $this->from_currency_code = $from_currency_code;
         $this->to_currency_code = $to_currency_code;
+        $this->get_rate_behaviour = $get_rate_behaviour;
     }
 
     /**
-     * Get message with rate information
+     * Get currency rate
      *
-     * @return string
+     * @return float
+     * @throws CouldNotRetrieveCurrencyRateException
      */
-    public function message(): string
+    public function rate(): float
     {
-        return sprintf("1 %s is %.2f %s", $this->from_currency_code, $this->currency_rate, $this->to_currency_code);
+        return $this->get_rate_behaviour->get($this->from_currency_code, $this->to_currency_code);
     }
 }

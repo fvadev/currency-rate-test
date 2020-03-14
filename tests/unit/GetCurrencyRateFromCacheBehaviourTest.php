@@ -7,8 +7,7 @@
 use CurrencyRate\GetCurrencyRateFromCacheBehaviour;
 use CurrencyRate\GetCurrencyRateNullBehaviour;
 use CurrencyRate\CurrencyRateCacheStorage;
-use CurrencyRate\CurrencyRateNull;
-use CurrencyRate\CurrencyRate;
+use CurrencyRate\CouldNotRetrieveCurrencyRateException;
 use CurrencyRateTest\Stub\GetCurrencyRateBehaviour;
 
 class GetCurrencyRateFromCacheBehaviourTest extends PHPUnit\Framework\TestCase
@@ -47,8 +46,9 @@ class GetCurrencyRateFromCacheBehaviourTest extends PHPUnit\Framework\TestCase
         $this->mockStorageNull->expects($this->any())
             ->method('get')
             ->with('USD', 'RUR')
-            ->willReturn(new CurrencyRateNull());
-        $this->assertInstanceOf(CurrencyRateNull::class, $this->behaviorNull->get('USD', 'RUR'));
+            ->willReturn(null);
+        $this->expectException(CouldNotRetrieveCurrencyRateException::class);
+        $this->behavior->get('USD', 'RUR');
     }
 
     public function testGetForExists()
@@ -57,26 +57,34 @@ class GetCurrencyRateFromCacheBehaviourTest extends PHPUnit\Framework\TestCase
             ->method('set');
         $this->mockStorage->expects($this->any())
             ->method('get')
-            ->with('USD', 'RUR')
-            ->willReturn(new CurrencyRate(75, 'USD', 'RUR'));
+            ->will(
+                $this->returnValueMap(
+                    [
+                        ['USD', 'RUR', 75.0],
+                        ['EUR', 'RUR', 85.0]
+                    ]
+                )
+            );
 
-        $this->assertEquals("1 USD is 75.00 RUR", $this->behavior->get('USD', 'RUR')->message());
-        $this->assertEquals("1 USD is 75.00 RUR", $this->behavior->get('USD', 'RUR')->message());
+        $this->assertEquals(75.0, $this->behavior->get('USD', 'RUR'));
+        $this->assertEquals(75.0, $this->behavior->get('USD', 'RUR'));
+        $this->assertEquals(85.0, $this->behavior->get('EUR', 'RUR'));
     }
 
     public function testGetWithSave()
     {
         $this->mockStorageStub->expects($this->once())
             ->method('set')
-            ->with(new CurrencyRate(100, 'EUR', 'RUR'));
+            ->with('EUR', 'RUR', 100.0);
         $this->mockStorageStub->expects($this->any())
             ->method('get')
-            ->will($this->onConsecutiveCalls(new CurrencyRateNull(),
-                new CurrencyRate(100, 'EUR', 'RUR'),
-                new CurrencyRate(100, 'EUR', 'RUR')
+            ->will($this->onConsecutiveCalls(null,
+                100.0,
+                100.0
             ));
 
-        $this->assertEquals("1 EUR is 100.00 RUR", $this->behaviorStub->get('EUR', 'RUR')->message());
-        $this->assertEquals("1 EUR is 100.00 RUR", $this->behaviorStub->get('EUR', 'RUR')->message());
+        $this->assertEquals(100.0, $this->behaviorStub->get('EUR', 'RUR'));
+        $this->assertEquals(100.0, $this->behaviorStub->get('EUR', 'RUR'));
+        $this->assertEquals(100.0, $this->behaviorStub->get('EUR', 'RUR'));
     }
 }

@@ -31,9 +31,11 @@ class CurrencyRateDbStorage implements ICurrencyRateDbStorage
     /**
      * Save currency rate in database
      *
-     * @param ICurrencyRate $currency_rate
+     * @param string $from_currency_code
+     * @param string $to_currency_code
+     * @param float $currency_rate
      */
-    public function save(ICurrencyRate $currency_rate)
+    public function save(string $from_currency_code, string $to_currency_code, float $currency_rate): void
     {
         // @TODO save currency rate in specific DB, catch extensions
     }
@@ -43,21 +45,20 @@ class CurrencyRateDbStorage implements ICurrencyRateDbStorage
      *
      * @param string $from_currency_code
      * @param string $to_currency_code
-     * @return ICurrencyRate
+     * @return float|null
      */
-    public function load(string $from_currency_code, string $to_currency_code): ICurrencyRate
+    public function load(string $from_currency_code, string $to_currency_code): ?float
     {
         try {
-            // @TODO making DB request, fill values, exceptions or return null rate
-//            return new CurrencyRate(90, $from_currency_code, $to_currency_code);
-            return new CurrencyRateNull();
-            $rate = 0;
-            return new CurrencyRate($rate, $from_currency_code, $to_currency_code);
+            // @TODO making DB request, fill rate, exceptions
+//            return 90;
+            $rate = null;
+            return $rate;
         } catch (\Exception $e) {
             //@TODO Process extensions here
         }
 
-        return new CurrencyRateNull();
+        return null;
     }
 
 }
