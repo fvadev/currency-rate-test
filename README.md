@@ -18,10 +18,11 @@ vendor/bin/phpunit
 
 # TODO
 - Realisation of resources (CurrencyRateCacheStorage|CurrencyRateDbStorage|CurrencyRateHttpResource)
-- Collection
+- Collection?
 
 # Notes
-I assumed that if currency rate is impossible to retrieve then CouldNotRetrieveCurrencyRateException is raised.
-I assumed that all resources catch all extensions entirely. If resource do not have currency rate it returns null.
+- I assumed that if currency rate is impossible to retrieve then CouldNotRetrieveCurrencyRateException is raised.
+- I assumed that all resources catch all extensions entirely. If resource do not have currency rate it returns null.
+- All classes in one folder just to make review process easy. 
 
  
